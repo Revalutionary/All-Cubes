@@ -6,10 +6,12 @@
 
 using namespace geode::prelude;
 
-class MainPopupMenu : public geode::Popup<std::string const&> {
+class MainPopupMenu : public Popup {
 	protected:
 
-		bool setup(std::string const& value) override {
+		bool init(std::string const& value) {
+
+            /*
 			this->setTitle("All Cubes");
 
             auto popupMenu = m_mainLayer->getChildByType<CCMenu>(0);
@@ -19,54 +21,67 @@ class MainPopupMenu : public geode::Popup<std::string const&> {
 			label->setID("all-cubes-popup-label"_spr);
 			popupMenu->addChildAtPosition(label, Anchor::Center);
 
+            */
+
+            if (!Popup::init(300.f, 80.f))
+                return false;
+            CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
+
+            auto node = CCLabelBMFont::create(value.c_str(), "bigFont.fnt");
+            node->setScale(0.6f);
+            this->addChild(node);
+            auto menu = this->getChildByType<CCLayer>(0)->getChildByType<CCMenu>(0);
+            node->setPosition(screenSize/2);
+            node->setPositionY(182.f);
+            
 			// Ship Button
 			auto shipSpr = CircleButtonSprite::create(CCSprite::createWithSpriteFrameName("gj_shipBtn_on_001.png"), CircleBaseColor::Green, CircleBaseSize::SmallAlt);
-			auto shipBtn = CCMenuItemSpriteExtra::create(shipSpr, popupMenu, menu_selector(MainPopupMenu::onShipButton));
-            shipBtn->setSprite(CCSprite::createWithSpriteFrameName(fmt::format("gj_shipBtn_{}_001.png", isShipCube ? "on" : "off").c_str()));
+			auto shipBtn = CCMenuItemSpriteExtra::create(shipSpr, menu, menu_selector(MainPopupMenu::onShipButton));
+            shipBtn->setSprite(CCSprite::createWithSpriteFrameName(fmt::format("gj_shipBtn_{}_001.png", Globals::get().isShipCube ? "on" : "off").c_str()));
 			shipBtn->setID("all-cubes-ship-button"_spr);
-			popupMenu->addChildAtPosition(shipBtn, Anchor::BottomLeft, ccp(41.5f, 24.f));
+			menu->addChildAtPosition(shipBtn, Anchor::BottomLeft, ccp(41.5f, 24.f));
 
             // Ball Button
             auto ballSpr = CircleButtonSprite::create(CCSprite::createWithSpriteFrameName("gj_ballBtn_on_001.png"), CircleBaseColor::Green, CircleBaseSize::SmallAlt);
-			auto ballBtn = CCMenuItemSpriteExtra::create(ballSpr, popupMenu, menu_selector(MainPopupMenu::onBallButton));
-            ballBtn->setSprite(CCSprite::createWithSpriteFrameName(fmt::format("gj_ballBtn_{}_001.png", isBallCube ? "on" : "off").c_str()));
+			auto ballBtn = CCMenuItemSpriteExtra::create(ballSpr, menu, menu_selector(MainPopupMenu::onBallButton));
+            ballBtn->setSprite(CCSprite::createWithSpriteFrameName(fmt::format("gj_ballBtn_{}_001.png", Globals::get().isBallCube ? "on" : "off").c_str()));
 			ballBtn->setID("all-cubes-ball-button"_spr);
-			popupMenu->addChildAtPosition(ballBtn, Anchor::BottomLeft, ccp(77.5f, 24.f));
+			menu->addChildAtPosition(ballBtn, Anchor::BottomLeft, ccp(77.5f, 24.f));
 
             // UFO Button
             auto UFOSpr = CircleButtonSprite::create(CCSprite::createWithSpriteFrameName("gj_birdBtn_on_001.png"), CircleBaseColor::Green, CircleBaseSize::SmallAlt);
-			auto UFOBtn = CCMenuItemSpriteExtra::create(UFOSpr, popupMenu, menu_selector(MainPopupMenu::onUFOButton));
-            UFOBtn->setSprite(CCSprite::createWithSpriteFrameName(fmt::format("gj_birdBtn_{}_001.png", isUFOCube ? "on" : "off").c_str()));
+			auto UFOBtn = CCMenuItemSpriteExtra::create(UFOSpr, menu, menu_selector(MainPopupMenu::onUFOButton));
+            UFOBtn->setSprite(CCSprite::createWithSpriteFrameName(fmt::format("gj_birdBtn_{}_001.png", Globals::get().isUFOCube ? "on" : "off").c_str()));
 			UFOBtn->setID("all-cubes-ufo-button"_spr);
-			popupMenu->addChildAtPosition(UFOBtn, Anchor::BottomLeft, ccp(113.5f, 24.f));
+			menu->addChildAtPosition(UFOBtn, Anchor::BottomLeft, ccp(113.5f, 24.f));
 
             // Wave Button
             auto waveSpr = CircleButtonSprite::create(CCSprite::createWithSpriteFrameName("gj_dartBtn_on_001.png"), CircleBaseColor::Green, CircleBaseSize::SmallAlt);
-			auto waveBtn = CCMenuItemSpriteExtra::create(waveSpr, popupMenu, menu_selector(MainPopupMenu::onWaveButton));
-            waveBtn->setSprite(CCSprite::createWithSpriteFrameName(fmt::format("gj_dartBtn_{}_001.png", isWaveCube ? "on" : "off").c_str()));
+			auto waveBtn = CCMenuItemSpriteExtra::create(waveSpr, menu, menu_selector(MainPopupMenu::onWaveButton));
+            waveBtn->setSprite(CCSprite::createWithSpriteFrameName(fmt::format("gj_dartBtn_{}_001.png", Globals::get().isWaveCube ? "on" : "off").c_str()));
 			waveBtn->setID("all-cubes-wave-button"_spr);
-			popupMenu->addChildAtPosition(waveBtn, Anchor::BottomLeft, ccp(149.5f, 24.f));
+			menu->addChildAtPosition(waveBtn, Anchor::BottomLeft, ccp(149.5f, 24.f));
 
             // Robot Button
             auto robotSpr = CircleButtonSprite::create(CCSprite::createWithSpriteFrameName("gj_robotBtn_on_001.png"), CircleBaseColor::Green, CircleBaseSize::SmallAlt);
-			auto robotBtn = CCMenuItemSpriteExtra::create(robotSpr, popupMenu, menu_selector(MainPopupMenu::onRobotButton));
-            robotBtn->setSprite(CCSprite::createWithSpriteFrameName(fmt::format("gj_robotBtn_{}_001.png", isRobotCube ? "on" : "off").c_str()));
+			auto robotBtn = CCMenuItemSpriteExtra::create(robotSpr, menu, menu_selector(MainPopupMenu::onRobotButton));
+            robotBtn->setSprite(CCSprite::createWithSpriteFrameName(fmt::format("gj_robotBtn_{}_001.png", Globals::get().isRobotCube ? "on" : "off").c_str()));
 			robotBtn->setID("all-cubes-robot-button"_spr);
-			popupMenu->addChildAtPosition(robotBtn, Anchor::BottomLeft, ccp(185.5f, 24.f));
+			menu->addChildAtPosition(robotBtn, Anchor::BottomLeft, ccp(185.5f, 24.f));
 
             // Spider Button
             auto spiderSpr = CircleButtonSprite::create(CCSprite::createWithSpriteFrameName("gj_spiderBtn_on_001.png"), CircleBaseColor::Green, CircleBaseSize::SmallAlt);
-			auto spiderBtn = CCMenuItemSpriteExtra::create(spiderSpr, popupMenu, menu_selector(MainPopupMenu::onSpiderButton));
-            spiderBtn->setSprite(CCSprite::createWithSpriteFrameName(fmt::format("gj_spiderBtn_{}_001.png", isSpiderCube ? "on" : "off").c_str()));
+			auto spiderBtn = CCMenuItemSpriteExtra::create(spiderSpr, menu, menu_selector(MainPopupMenu::onSpiderButton));
+            spiderBtn->setSprite(CCSprite::createWithSpriteFrameName(fmt::format("gj_spiderBtn_{}_001.png", Globals::get().isSpiderCube ? "on" : "off").c_str()));
 			spiderBtn->setID("all-cubes-spider-button"_spr);
-			popupMenu->addChildAtPosition(spiderBtn, Anchor::BottomLeft, ccp(221.5f, 24.f));
+			menu->addChildAtPosition(spiderBtn, Anchor::BottomLeft, ccp(221.5f, 24.f));
 
             // Swing Button
             auto swingSpr = CircleButtonSprite::create(CCSprite::createWithSpriteFrameName("gj_swingBtn_on_001.png"), CircleBaseColor::Green, CircleBaseSize::SmallAlt);
-			auto swingBtn = CCMenuItemSpriteExtra::create(swingSpr, popupMenu, menu_selector(MainPopupMenu::onSwingButton));
-            swingBtn->setSprite(CCSprite::createWithSpriteFrameName(fmt::format("gj_swingBtn_{}_001.png", isSwingCube ? "on" : "off").c_str()));
+			auto swingBtn = CCMenuItemSpriteExtra::create(swingSpr, menu, menu_selector(MainPopupMenu::onSwingButton));
+            swingBtn->setSprite(CCSprite::createWithSpriteFrameName(fmt::format("gj_swingBtn_{}_001.png", Globals::get().isSwingCube ? "on" : "off").c_str()));
 			swingBtn->setID("all-cubes-swing-button"_spr);
-			popupMenu->addChildAtPosition(swingBtn, Anchor::BottomLeft, ccp(257.5f, 24.f));
+			menu->addChildAtPosition(swingBtn, Anchor::BottomLeft, ccp(257.5f, 24.f));
 
             return true;
 		}
@@ -75,7 +90,7 @@ class MainPopupMenu : public geode::Popup<std::string const&> {
 
 		static MainPopupMenu* create(std::string const& text) {
 			auto ret = new MainPopupMenu();
-			if (ret->initAnchored(300.f, 100.f, text)) {
+			if (ret->init(text)) {
 				ret->autorelease();
 				return ret;
 			}
@@ -89,11 +104,11 @@ class MainPopupMenu : public geode::Popup<std::string const&> {
 		void onShipButton(CCObject* sender) {
             auto shipBtn = static_cast<CCMenuItemSpriteExtra*>(sender);
             if (shipBtn) {
-                if (isShipCube) {
-				    isShipCube = false;
+                if (Globals::get().isShipCube) {
+				    Globals::get().isShipCube = false;
                     shipBtn->setSprite(CCSprite::createWithSpriteFrameName("gj_shipBtn_off_001.png"));
                 } else {
-                    isShipCube = true;
+                    Globals::get().isShipCube = true;
                     shipBtn->setSprite(CCSprite::createWithSpriteFrameName("gj_shipBtn_on_001.png"));
                 }
             }
@@ -105,11 +120,11 @@ class MainPopupMenu : public geode::Popup<std::string const&> {
         void onBallButton(CCObject* sender) {
             auto ballBtn = static_cast<CCMenuItemSpriteExtra*>(sender);
             if (ballBtn) {
-                if (isBallCube) {
-				    isBallCube = false;
+                if (Globals::get().isBallCube) {
+				    Globals::get().isBallCube = false;
                     ballBtn->setSprite(CCSprite::createWithSpriteFrameName("gj_ballBtn_off_001.png"));
                 } else {
-                    isBallCube = true;
+                    Globals::get().isBallCube = true;
                     ballBtn->setSprite(CCSprite::createWithSpriteFrameName("gj_ballBtn_on_001.png"));
                 }
             }
@@ -121,11 +136,11 @@ class MainPopupMenu : public geode::Popup<std::string const&> {
         void onUFOButton(CCObject* sender) {
             auto UFOBtn = static_cast<CCMenuItemSpriteExtra*>(sender);
             if (UFOBtn) {
-                if (isUFOCube) {
-				    isUFOCube = false;
+                if (Globals::get().isUFOCube) {
+				    Globals::get().isUFOCube = false;
                     UFOBtn->setSprite(CCSprite::createWithSpriteFrameName("gj_birdBtn_off_001.png"));
                 } else {
-                    isUFOCube = true;
+                    Globals::get().isUFOCube = true;
                     UFOBtn->setSprite(CCSprite::createWithSpriteFrameName("gj_birdBtn_on_001.png"));
                 }
             }
@@ -137,11 +152,11 @@ class MainPopupMenu : public geode::Popup<std::string const&> {
         void onWaveButton(CCObject* sender) {
             auto waveBtn = static_cast<CCMenuItemSpriteExtra*>(sender);
             if (waveBtn) {
-                if (isWaveCube) {
-				    isWaveCube = false;
+                if (Globals::get().isWaveCube) {
+				    Globals::get().isWaveCube = false;
                     waveBtn->setSprite(CCSprite::createWithSpriteFrameName("gj_dartBtn_off_001.png"));
                 } else {
-                    isWaveCube = true;
+                    Globals::get().isWaveCube = true;
                     waveBtn->setSprite(CCSprite::createWithSpriteFrameName("gj_dartBtn_on_001.png"));
                 }
             }
@@ -153,11 +168,11 @@ class MainPopupMenu : public geode::Popup<std::string const&> {
         void onRobotButton(CCObject* sender) {
             auto robotBtn = static_cast<CCMenuItemSpriteExtra*>(sender);
             if (robotBtn) {
-                if (isRobotCube) {
-				    isRobotCube = false;
+                if (Globals::get().isRobotCube) {
+				    Globals::get().isRobotCube = false;
                     robotBtn->setSprite(CCSprite::createWithSpriteFrameName("gj_robotBtn_off_001.png"));
                 } else {
-                    isRobotCube = true;
+                    Globals::get().isRobotCube = true;
                     robotBtn->setSprite(CCSprite::createWithSpriteFrameName("gj_robotBtn_on_001.png"));
                 }
             }
@@ -169,11 +184,11 @@ class MainPopupMenu : public geode::Popup<std::string const&> {
         void onSpiderButton(CCObject* sender) {
             auto spiderBtn = static_cast<CCMenuItemSpriteExtra*>(sender);
             if (spiderBtn) {
-                if (isSpiderCube) {
-				    isSpiderCube = false;
+                if (Globals::get().isSpiderCube) {
+				    Globals::get().isSpiderCube = false;
                     spiderBtn->setSprite(CCSprite::createWithSpriteFrameName("gj_spiderBtn_off_001.png"));
                 } else {
-                    isSpiderCube = true;
+                    Globals::get().isSpiderCube = true;
                     spiderBtn->setSprite(CCSprite::createWithSpriteFrameName("gj_spiderBtn_on_001.png"));
                 }
             }
@@ -185,11 +200,11 @@ class MainPopupMenu : public geode::Popup<std::string const&> {
         void onSwingButton(CCObject* sender) {
             auto swingBtn = static_cast<CCMenuItemSpriteExtra*>(sender);
             if (swingBtn) {
-                if (isSwingCube) {
-				    isSwingCube = false;
+                if (Globals::get().isSwingCube) {
+				    Globals::get().isSwingCube = false;
                     swingBtn->setSprite(CCSprite::createWithSpriteFrameName("gj_swingBtn_off_001.png"));
                 } else {
-                    isSwingCube = true;
+                    Globals::get().isSwingCube = true;
                     swingBtn->setSprite(CCSprite::createWithSpriteFrameName("gj_swingBtn_on_001.png"));
                 }
             }

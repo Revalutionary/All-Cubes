@@ -1,5 +1,8 @@
+#include <Geode/DefaultInclude.hpp>
+
 #include <Geode/modify/GJGarageLayer.hpp>
 #include <Geode/modify/PlayerObject.hpp>
+#include <Geode/modify/GhostTrailEffect.hpp>
 #include <cue/PlayerIcon.hpp>
 
 using namespace geode::prelude;
@@ -30,18 +33,28 @@ class $modify(HGJGarageLayer, GJGarageLayer) {
         return true;
     }
 
+	void onBack(CCObject* sender) {
+		Mod::get()->setSavedValue<bool>("isShipCube", Globals::get().isShipCube);
+		Mod::get()->setSavedValue<bool>("isBallCube", Globals::get().isBallCube);
+		Mod::get()->setSavedValue<bool>("isUFOCube", Globals::get().isUFOCube);
+		Mod::get()->setSavedValue<bool>("isWaveCube", Globals::get().isUFOCube);
+		Mod::get()->setSavedValue<bool>("isRobotCube", Globals::get().isRobotCube);
+		Mod::get()->setSavedValue<bool>("isSpiderCube", Globals::get().isSpiderCube);
+		Mod::get()->setSavedValue<bool>("isSwingCube", Globals::get().isSwingCube);
+		GJGarageLayer::onBack(sender);
+	}
+
 	public:
 
 		void onButton(CCObject* sender) {
 			geode::log::debug("button pressed");
 			auto mainMenuPopup = MainPopupMenu::create("Choose which gamemodes");
-			mainMenuPopup->m_scene = this;
+			// mainMenuPopup->m_scene = this;
 			mainMenuPopup->show();
 		}
 };
 
 class $modify(HPlayerObject, PlayerObject) {
-	// WIP
 	struct Fields {
 		cue::PlayerIcon* m_customSprite = nullptr;
 		bool enabled = false;
@@ -80,7 +93,7 @@ class $modify(HPlayerObject, PlayerObject) {
 			if (!(fields->enabled)) {
 				return true;
 			}
-			if (isShipCube || isBallCube || isUFOCube || isWaveCube || isRobotCube || isSpiderCube || isSwingCube) {
+			if (Globals::get().isShipCube || Globals::get().isBallCube || Globals::get().isUFOCube || Globals::get().isWaveCube || Globals::get().isRobotCube || Globals::get().isSpiderCube || Globals::get().isSwingCube) {
 				fields->m_customSprite = cue::PlayerIcon::create(IconType::Cube, player, GameManager::get()->m_playerColor, GameManager::get()->m_playerColor2, GameManager::get()->m_playerGlowColor);
 				fields->m_customSprite->setScale(1.f);
 				fields->m_customSprite->setAnchorPoint(ccp(0.f, 0.f));
@@ -93,6 +106,8 @@ class $modify(HPlayerObject, PlayerObject) {
 			}
 			return true;
 		}
+
+		private:
 
 		HPlayerObject::Gamemodes gamemode() {
 			if (m_isShip)
@@ -113,6 +128,8 @@ class $modify(HPlayerObject, PlayerObject) {
 				return Cube;
 		}
 
+		public:
+
 		void update(float dt) {
 			PlayerObject::update(dt);
 
@@ -123,7 +140,7 @@ class $modify(HPlayerObject, PlayerObject) {
 				return;
 			}
 
-			if (!(isShipCube || isBallCube || isUFOCube || isWaveCube || isRobotCube || isSpiderCube || isSwingCube)) {
+			if (!(Globals::get().isShipCube || Globals::get().isBallCube || Globals::get().isUFOCube || Globals::get().isWaveCube || Globals::get().isRobotCube || Globals::get().isSpiderCube || Globals::get().isSwingCube)) {
 				return;
 			}
 
@@ -139,12 +156,20 @@ class $modify(HPlayerObject, PlayerObject) {
 				return;
 			}
 
+			// If on the level completed screen
+			if (PlayLayer::get()) {
+				if (PlayLayer::get()->getChildByType<EndLevelLayer>(0)) {
+					fields->m_customSprite->setVisible(false);
+					return;
+				}
+			}
+
 			auto activeMode = this->gamemode();
 
 			switch (activeMode) {
 				case Ship: {
 					if (m_mainLayer->getChildByID("ship-frame")) {
-						if (!isShipCube) {
+						if (!Globals::get().isShipCube) {
 							m_mainLayer->getChildByID("ship-frame")->setVisible(true);
 							goto activeDisabled;
 						} else {
@@ -159,7 +184,7 @@ class $modify(HPlayerObject, PlayerObject) {
 				}
 				case UFO: {	
 					if (m_mainLayer->getChildByID("ship-frame")) {
-						if (!isUFOCube) {
+						if (!Globals::get().isUFOCube) {
 							m_mainLayer->getChildByID("ship-frame")->setVisible(true);
 							goto activeDisabled;
 						} else {
@@ -172,7 +197,7 @@ class $modify(HPlayerObject, PlayerObject) {
 					}
 				}
 				case Ball: {
-					if (!isBallCube) {
+					if (!Globals::get().isBallCube) {
 						goto activeDisabled;
 					} else {
 						if (!fields->rotationEnabled) {
@@ -188,25 +213,27 @@ class $modify(HPlayerObject, PlayerObject) {
 					goto activeEnabled;
 				}
 				case Robot: {
-					if (!isRobotCube) {
+					if (!Globals::get().isRobotCube) {
 						m_robotBatchNode->setVisible(true);
-						goto activeDisabled;
+						fields->m_customSprite->setVisible(false);
+						return;
 					} else {
 						m_robotBatchNode->setVisible(false);
 						goto activeEnabled;
 					}
 				}
 				case Spider: {
-					if (!isSpiderCube) {
+					if (!Globals::get().isSpiderCube) {
 						m_spiderBatchNode->setVisible(true);
-						goto activeDisabled;
+						fields->m_customSprite->setVisible(false);
+						return;
 					} else {
 						m_spiderBatchNode->setVisible(false);
 						goto activeEnabled;
 					}
 				}
 				case Wave: {
-					if (!isWaveCube) {
+					if (!Globals::get().isWaveCube) {
 						goto activeDisabled;
 					} else {
 						fields->m_customSprite->setScale(fields->waveSize);
@@ -214,7 +241,7 @@ class $modify(HPlayerObject, PlayerObject) {
 					}
 				}
 				case Swing: {
-					if (!isSwingCube) {
+					if (!Globals::get().isSwingCube) {
 						goto activeDisabled;
 					} else {
 						m_mainLayer->getChildByID("swing-bottom-boost")->setVisible(true);
@@ -227,17 +254,17 @@ class $modify(HPlayerObject, PlayerObject) {
 					}
 				}
 			}
+			
 			activeDisabled:
-					m_mainLayer->getChildByID("glow-frame")->setVisible(true);
-					m_mainLayer->getChildByID("gamemode-frame")->setVisible(true);
-					fields->m_customSprite->setVisible(false);
+				m_mainLayer->getChildByID("glow-frame")->setVisible(true);
+				m_mainLayer->getChildByID("gamemode-frame")->setVisible(true);
+				fields->m_customSprite->setVisible(false);
 				return;
-
 			activeEnabled:
 				m_mainLayer->getChildByID("glow-frame")->setVisible(false);
 				m_mainLayer->getChildByID("gamemode-frame")->setVisible(false);
 				fields->m_customSprite->setVisible(true);
-			return;
+				return;
 		}
 
 		void toggleDartMode(bool enable, bool noEffects) {
@@ -251,10 +278,10 @@ class $modify(HPlayerObject, PlayerObject) {
 				}
 				
 
-				if (enable && isWaveCube) {
+				if (enable && Globals::get().isWaveCube) {
 					fields->m_customSprite->setScale(fields->waveSize);
 					fields->m_customSprite->setPosition(ccp(-5.5f, -5.5f));
-				} else if (!enable && isWaveCube) {
+				} else if (!enable && Globals::get().isWaveCube) {
 					fields->m_customSprite->setScale(1.f);
 					fields->m_customSprite->setPosition(ccp(-16.5f, -16.5f));
 				}
@@ -267,7 +294,6 @@ class $modify(HPlayerObject, PlayerObject) {
 				fields->m_customSprite->setVisible(false);
 				m_mainLayer->getChildByID("gamemode-frame")->setVisible(true);
 			}
-
 			PlayerObject::playDeathEffect();
 		}
 
@@ -275,11 +301,22 @@ class $modify(HPlayerObject, PlayerObject) {
 			auto fields = m_fields.self();
 			if (fields->enabled) {
 				fields->m_customSprite->setVisible(false);
-			}	
+			}
 			PlayerObject::playCompleteEffect(noEffects, instant);
 		}
-};
 
+		void flipGravity(bool flip, bool noEffects) {
+			PlayerObject::flipGravity(flip, noEffects);
+
+			auto fields = m_fields.self();
+			if (fields->enabled) {
+				if (flip)
+					fields->m_customSprite->setFlipY(true);
+				else
+					fields->m_customSprite->setFlipY(false);
+			}
+		}
+};
 
 /* 
 
@@ -299,5 +336,5 @@ You thought I was done? No no no, you can't escape this pal. I coded this mod so
 With all disrespect,
 Revalutionary
 
-(I would've coded this entire thing in TürkçeKod to make your life harder (and "that's just cool") but I couldn't be bothered)
+(I would've coded this entire thing in TürkçeKod to make your life harder but I couldn't be bothered)
 */
