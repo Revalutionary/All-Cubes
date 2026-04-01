@@ -29,11 +29,11 @@ class MainPopupMenu : public Popup {
 
             auto node = CCLabelBMFont::create(value.c_str(), "bigFont.fnt");
             node->setScale(0.6f);
-            this->addChild(node);
+            m_mainLayer->addChild(node);
             auto menu = this->getChildByType<CCLayer>(0)->getChildByType<CCMenu>(0);
-            node->setPosition(screenSize/2);
-            node->setPositionY(182.f);
-            
+            node->setPosition(ccp(144.f, 60.f));
+            // node->setPositionY(182.f);
+        
 			// Ship Button
 			auto shipSpr = CircleButtonSprite::create(CCSprite::createWithSpriteFrameName("gj_shipBtn_on_001.png"), CircleBaseColor::Green, CircleBaseSize::SmallAlt);
 			auto shipBtn = CCMenuItemSpriteExtra::create(shipSpr, menu, menu_selector(MainPopupMenu::onShipButton));

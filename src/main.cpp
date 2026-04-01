@@ -270,14 +270,13 @@ class $modify(HPlayerObject, PlayerObject) {
 		void toggleDartMode(bool enable, bool noEffects) {
 			auto fields = m_fields.self();
 			PlayerObject::toggleDartMode(enable, noEffects);
-			if (fields->enabled) {
+			if (fields->enabled && (Globals::get().isShipCube || Globals::get().isBallCube || Globals::get().isUFOCube || Globals::get().isWaveCube || Globals::get().isRobotCube || Globals::get().isSpiderCube || Globals::get().isSwingCube)) {
 				if (!PlayLayer::get() && !fields->menuEnabled) {
 					m_mainLayer->getChildByID("glow-frame")->setVisible(true);
 					m_mainLayer->getChildByID("gamemode-frame")->setVisible(true);
 					return;
 				}
-				
-
+			
 				if (enable && Globals::get().isWaveCube) {
 					fields->m_customSprite->setScale(fields->waveSize);
 					fields->m_customSprite->setPosition(ccp(-5.5f, -5.5f));
@@ -290,31 +289,21 @@ class $modify(HPlayerObject, PlayerObject) {
 
 		void playDeathEffect() {
 			auto fields = m_fields.self();
-			if (fields->enabled){
+			geode::log::info("Ship: {} Ball: {} UFO: {} Wave: {} Robot: {} Spider: {} Swing: {}", Globals::get().isShipCube, Globals::get().isBallCube, Globals::get().isUFOCube, Globals::get().isWaveCube, Globals::get().isRobotCube, Globals::get().isSpiderCube, Globals::get().isSwingCube);
+			if (fields->enabled && (Globals::get().isShipCube || Globals::get().isBallCube || Globals::get().isUFOCube || Globals::get().isWaveCube || Globals::get().isRobotCube || Globals::get().isSpiderCube || Globals::get().isSwingCube)){
+				geode::log::info("inside the if statement FUCK!");
 				fields->m_customSprite->setVisible(false);
 				m_mainLayer->getChildByID("gamemode-frame")->setVisible(true);
 			}
 			PlayerObject::playDeathEffect();
 		}
-
+		
 		void playCompleteEffect(bool noEffects, bool instant) {		
 			auto fields = m_fields.self();
-			if (fields->enabled) {
+			if (fields->enabled && (Globals::get().isShipCube || Globals::get().isBallCube || Globals::get().isUFOCube || Globals::get().isWaveCube || Globals::get().isRobotCube || Globals::get().isSpiderCube || Globals::get().isSwingCube)) {
 				fields->m_customSprite->setVisible(false);
 			}
 			PlayerObject::playCompleteEffect(noEffects, instant);
-		}
-
-		void flipGravity(bool flip, bool noEffects) {
-			PlayerObject::flipGravity(flip, noEffects);
-
-			auto fields = m_fields.self();
-			if (fields->enabled) {
-				if (flip)
-					fields->m_customSprite->setFlipY(true);
-				else
-					fields->m_customSprite->setFlipY(false);
-			}
 		}
 };
 
