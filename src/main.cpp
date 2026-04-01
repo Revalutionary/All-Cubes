@@ -2,7 +2,6 @@
 
 #include <Geode/modify/GJGarageLayer.hpp>
 #include <Geode/modify/PlayerObject.hpp>
-#include <Geode/modify/GhostTrailEffect.hpp>
 #include <cue/PlayerIcon.hpp>
 
 using namespace geode::prelude;
@@ -135,16 +134,17 @@ class $modify(HPlayerObject, PlayerObject) {
 
 			auto fields = m_fields.self();
 
-			// if mod isn't enabled
+			// If mod isn't enabled
 			if (!(fields->enabled)) {
 				return;
 			}
 
+			// If nothing is enabled
 			if (!(Globals::get().isShipCube || Globals::get().isBallCube || Globals::get().isUFOCube || Globals::get().isWaveCube || Globals::get().isRobotCube || Globals::get().isSpiderCube || Globals::get().isSwingCube)) {
 				return;
 			}
 
-			// if in platformer and platformer is disabled
+			// If in platformer and platformer is disabled
 			if (m_isPlatformer && !(fields->platformerEnabled)) {
 				return;
 			}

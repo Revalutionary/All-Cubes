@@ -11,18 +11,6 @@ class MainPopupMenu : public Popup {
 
 		bool init(std::string const& value) {
 
-            /*
-			this->setTitle("All Cubes");
-
-            auto popupMenu = m_mainLayer->getChildByType<CCMenu>(0);
-
-			auto label = CCLabelBMFont::create(value.c_str(), "bigFont.fnt");
-            label->setScale(0.5f);
-			label->setID("all-cubes-popup-label"_spr);
-			popupMenu->addChildAtPosition(label, Anchor::Center);
-
-            */
-
             if (!Popup::init(300.f, 80.f))
                 return false;
             CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
