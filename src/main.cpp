@@ -46,7 +46,6 @@ class $modify(HGJGarageLayer, GJGarageLayer) {
 	public:
 
 		void onButton(CCObject* sender) {
-			geode::log::debug("button pressed");
 			auto mainMenuPopup = MainPopupMenu::create("Choose which gamemodes");
 			// mainMenuPopup->m_scene = this;
 			mainMenuPopup->show();
@@ -289,9 +288,7 @@ class $modify(HPlayerObject, PlayerObject) {
 
 		void playDeathEffect() {
 			auto fields = m_fields.self();
-			geode::log::info("Ship: {} Ball: {} UFO: {} Wave: {} Robot: {} Spider: {} Swing: {}", Globals::get().isShipCube, Globals::get().isBallCube, Globals::get().isUFOCube, Globals::get().isWaveCube, Globals::get().isRobotCube, Globals::get().isSpiderCube, Globals::get().isSwingCube);
 			if (fields->enabled && (Globals::get().isShipCube || Globals::get().isBallCube || Globals::get().isUFOCube || Globals::get().isWaveCube || Globals::get().isRobotCube || Globals::get().isSpiderCube || Globals::get().isSwingCube)){
-				geode::log::info("inside the if statement FUCK!");
 				fields->m_customSprite->setVisible(false);
 				m_mainLayer->getChildByID("gamemode-frame")->setVisible(true);
 			}
