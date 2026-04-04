@@ -312,15 +312,3 @@ class $modify(HPlayerObject, PlayerObject) {
  - FlipY when upsidedown
 
 */
-
-
-/*
-Dear HJFod,
-
-You thought I was done? No no no, you can't escape this pal. I coded this mod so horribly that your eyes will bleed for days wishing you never made geode. You gave the general GD public so much control over the game that you will live to regret it. Sitting on your death bed you will regret 3 things: 1. Why did I make geode... 2. Why can't I lose weight... 3. For what is a man? What has he got? Yeah, that is from my way, because it's my way or the highway pal. You think your word is absolute huh? You aren't Allah, don't even try. Shut down shop unc, you don't got ts. Making children and trapping them in Nodes for their entire lives until they one day die from starvation isn't a good business move and the police is catching onto you. You can't keep getting away with this.
-
-With all disrespect,
-Revalutionary
-
-(I would've coded this entire thing in TürkçeKod to make your life harder but I couldn't be bothered)
-*/
