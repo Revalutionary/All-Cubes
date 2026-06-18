@@ -54,5 +54,8 @@
 	},
 	"tags": ["joke", "gameplay", "offline", "cheat"],
 	"developer": "Revalutionary",
-	"description": "Makes every gamemode look like a cube"
+	"description": "Makes every gamemode look like a cube",
+	"dependencies": {
+		"geode.node-ids": ">=v1.23.3"
+	}
 }
