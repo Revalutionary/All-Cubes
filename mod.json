@@ -8,7 +8,7 @@
 	},
 	"id": "revalutionary.all-cubes",
 	"name": "All Cubes",
-	"version": "v1.0.0",
+	"version": "v1.0.1",
 	"settings": {
 		"enabled": {
 			"type": "bool",
